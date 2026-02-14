@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription Fournisseur - MarketPlace{% endblock %}
+
+{% block body %}
+<div class="min-h-[70vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Inscription Fournisseur</h1>
+            <p class="mt-2 text-sm text-gray-600">Rejoignez notre marketplace et vendez vos produits</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <form method="post" class="space-y-5">
+                {{ form_row(userForm._token) }}
+                {{ form_row(supplierForm._token) }}
+
+                <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">Informations personnelles</h3>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form_label(userForm.firstName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(userForm.firstName, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                        {{ form_errors(userForm.firstName) }}
+                    </div>
+                    <div>
+                        {{ form_label(userForm.lastName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(userForm.lastName, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                        {{ form_errors(userForm.lastName) }}
+                    </div>
+                </div>
+
+                <div>
+                    {{ form_label(userForm.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(userForm.email, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(userForm.email) }}
+                </div>
+
+                <div>
+                    {{ form_label(userForm.plainPassword.first, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(userForm.plainPassword.first) }}
+                </div>
+
+                <div>
+                    {{ form_label(userForm.plainPassword.second, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(userForm.plainPassword.second) }}
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 pt-4">Informations entreprise</h3>
+
+                <div>
+                    {{ form_label(supplierForm.companyName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(supplierForm.companyName, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(supplierForm.companyName) }}
+                </div>
+
+                <div>
+                    {{ form_label(supplierForm.description, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(supplierForm.description, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm', 'rows': '3'}}) }}
+                    {{ form_errors(supplierForm.description) }}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form_label(supplierForm.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(supplierForm.phone, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                        {{ form_errors(supplierForm.phone) }}
+                    </div>
+                    <div>
+                        {{ form_label(supplierForm.address, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(supplierForm.address, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                        {{ form_errors(supplierForm.address) }}
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <p class="text-sm text-yellow-800">Votre compte devra être approuvé par un administrateur avant que vos produits soient visibles sur la marketplace.</p>
+                </div>
+
+                <button type="submit" class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition">
+                    Créer mon compte fournisseur
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary-600 hover:text-primary-700 font-medium">Se connecter</a></p>
+                <p class="mt-2">Simple acheteur ? <a href="{{ path('app_register_client') }}" class="text-primary-600 hover:text-primary-700 font-medium">Inscription Client</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

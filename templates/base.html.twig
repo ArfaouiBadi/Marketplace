@@ -1,17 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr" class="h-full">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}MarketPlace{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🛒</text></svg>">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                        colors: { primary: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' } }
+                    }
+                }
+            }
+        </script>
+        {% block stylesheets %}{% endblock %}
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="h-full bg-gray-50 font-sans">
+        {# ===== NAVBAR ===== #}
+        <nav class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    {# Logo & main nav #}
+                    <div class="flex items-center space-x-8">
+                        <a href="{{ path('app_home') }}" class="text-xl font-bold text-primary-600 flex items-center gap-2">
+                            🛒 MarketPlace
+                        </a>
+                        <div class="hidden md:flex space-x-4">
+                            <a href="{{ path('product_list') }}" class="text-gray-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition">Produits</a>
+                        </div>
+                    </div>
+
+                    {# Search bar #}
+                    <div class="hidden md:flex items-center flex-1 max-w-lg mx-8">
+                        <form action="{{ path('product_list') }}" method="GET" class="w-full">
+                            <div class="relative">
+                                <input type="text" name="q" placeholder="Rechercher des produits..."
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    {# Right side #}
+                    <div class="flex items-center space-x-4">
+                        {% if app.user %}
+                            {% if is_granted('ROLE_CLIENT') %}
+                                <a href="{{ path('cart_index') }}" class="text-gray-600 hover:text-primary-600 relative p-2" title="Panier">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+                                    </svg>
+                                </a>
+                                <a href="{{ path('client_orders') }}" class="text-gray-600 hover:text-primary-600 text-sm font-medium">Mes commandes</a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_SUPPLIER') %}
+                                <a href="{{ path('supplier_dashboard') }}" class="text-gray-600 hover:text-primary-600 text-sm font-medium">Espace Fournisseur</a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('admin_dashboard') }}" class="text-gray-600 hover:text-primary-600 text-sm font-medium">Admin</a>
+                            {% endif %}
+
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-gray-700">{{ app.user.firstName }}</span>
+                                <a href="{{ path('app_logout') }}" class="text-sm text-red-500 hover:text-red-700 font-medium">Déconnexion</a>
+                            </div>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="text-gray-600 hover:text-primary-600 text-sm font-medium">Connexion</a>
+                            <a href="{{ path('app_register_client') }}" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition">Inscription</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        {# ===== FLASH MESSAGES ===== #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                    <div class="rounded-lg p-4 {% if label == 'success' %}bg-green-50 text-green-800 border border-green-200{% elseif label == 'error' %}bg-red-50 text-red-800 border border-red-200{% elseif label == 'warning' %}bg-yellow-50 text-yellow-800 border border-yellow-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                        <p class="text-sm font-medium">{{ message }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {# ===== MAIN CONTENT ===== #}
+        <main class="flex-1">
+            {% block body %}{% endblock %}
+        </main>
+
+        {# ===== FOOTER ===== #}
+        <footer class="bg-white border-t border-gray-200 mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">🛒 MarketPlace</h3>
+                        <p class="text-sm text-gray-500">Votre marketplace multi-fournisseurs pour trouver les meilleurs produits.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Liens rapides</h4>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li><a href="{{ path('product_list') }}" class="hover:text-primary-600">Tous les produits</a></li>
+                            <li><a href="{{ path('app_register_supplier') }}" class="hover:text-primary-600">Devenir fournisseur</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Contact</h4>
+                        <p class="text-sm text-gray-500">support@marketplace.com</p>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 mt-8 pt-6 text-center text-sm text-gray-400">
+                    &copy; {{ "now"|date("Y") }} MarketPlace. Tous droits réservés.
+                </div>
+            </div>
+        </footer>
     </body>
 </html>

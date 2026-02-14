@@ -1,0 +1,74 @@
+{% extends 'supplier/base.html.twig' %}
+
+{% block title %}Mes Produits - Fournisseur{% endblock %}
+
+{% block supplier_content %}
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Mes Produits</h1>
+        <a href="{{ path('supplier_product_new') }}" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition">
+            + Ajouter un produit
+        </a>
+    </div>
+
+    {% if products is not empty %}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Produit</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Prix</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Stock</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Statut</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for product in products %}
+                        <tr>
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-medium text-gray-900">{{ product.name }}</p>
+                                    {% if product.category %}
+                                        <span class="text-xs text-gray-500">{{ product.category.name }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">{{ product.price }} €</td>
+                            <td class="px-6 py-4 text-center">
+                                {% if product.stock > 0 %}
+                                    <span class="text-sm text-green-600 font-medium">{{ product.stock }}</span>
+                                {% else %}
+                                    <span class="text-sm text-red-600 font-medium">0</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                {% if product.isActive %}
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Actif</span>
+                                {% else %}
+                                    <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <a href="{{ path('supplier_product_edit', {id: product.id}) }}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Modifier</a>
+                                    <form action="{{ path('supplier_product_delete', {id: product.id}) }}" method="POST" class="inline" onsubmit="return confirm('Supprimer ce produit ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium">Supprimer</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-16 bg-white rounded-xl border border-gray-200">
+            <span class="text-4xl mb-4 block">📦</span>
+            <p class="text-gray-500 text-lg">Vous n'avez aucun produit.</p>
+            <a href="{{ path('supplier_product_new') }}" class="mt-4 inline-block text-primary-600 hover:text-primary-700 font-medium">
+                Ajouter votre premier produit
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

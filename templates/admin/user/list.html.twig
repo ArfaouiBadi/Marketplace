@@ -1,0 +1,61 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Utilisateurs - Admin{% endblock %}
+
+{% block admin_content %}
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Utilisateurs</h1>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Rôles</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Statut</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Inscrit le</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for user in users %}
+                    <tr>
+                        <td class="px-6 py-4">
+                            <p class="font-medium text-gray-900">{{ user.fullName }}</p>
+                        </td>
+                        <td class="px-6 py-4 text-center text-sm text-gray-600">{{ user.email }}</td>
+                        <td class="px-6 py-4 text-center">
+                            {% for role in user.roles %}
+                                {% if role != 'ROLE_USER' %}
+                                    <span class="inline-block text-xs px-2 py-1 rounded-full
+                                        {% if role == 'ROLE_ADMIN' %}bg-purple-100 text-purple-800
+                                        {% elseif role == 'ROLE_SUPPLIER' %}bg-blue-100 text-blue-800
+                                        {% elseif role == 'ROLE_CLIENT' %}bg-green-100 text-green-800
+                                        {% endif %}">
+                                        {{ role }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {% if user.isVerified %}
+                                <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Actif</span>
+                            {% else %}
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Inactif</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center text-sm text-gray-500">{{ user.createdAt|date('d/m/Y') }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <form action="{{ path('admin_user_toggle', {id: user.id}) }}" method="POST" class="inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ user.id) }}">
+                                <button type="submit" class="text-sm font-medium {% if user.isVerified %}text-red-500 hover:text-red-700{% else %}text-green-500 hover:text-green-700{% endif %}">
+                                    {{ user.isVerified ? 'Désactiver' : 'Activer' }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

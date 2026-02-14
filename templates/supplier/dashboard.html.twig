@@ -1,0 +1,45 @@
+{% extends 'supplier/base.html.twig' %}
+
+{% block title %}Tableau de bord - Fournisseur{% endblock %}
+
+{% block supplier_content %}
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Tableau de bord</h1>
+
+    {# Stats cards #}
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p class="text-sm text-gray-500 mb-1">Produits</p>
+            <p class="text-3xl font-bold text-primary-600">{{ productCount }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p class="text-sm text-gray-500 mb-1">Statut</p>
+            <p class="text-lg font-semibold {% if supplier.isApproved %}text-green-600{% else %}text-yellow-600{% endif %}">
+                {{ supplier.isApproved ? 'Approuvé' : 'En attente' }}
+            </p>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <p class="text-sm text-gray-500 mb-1">Entreprise</p>
+            <p class="text-lg font-semibold text-gray-900">{{ supplier.companyName }}</p>
+        </div>
+    </div>
+
+    {% if not supplier.isApproved %}
+        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
+            <h3 class="font-semibold text-yellow-800 mb-2">Compte en attente d'approbation</h3>
+            <p class="text-sm text-yellow-700">Votre compte fournisseur est en cours de vérification. Vos produits ne seront pas visibles sur la marketplace tant que votre compte n'aura pas été approuvé par un administrateur.</p>
+        </div>
+    {% endif %}
+
+    {# Quick actions #}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h2>
+        <div class="flex gap-4">
+            <a href="{{ path('supplier_product_new') }}" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition">
+                + Ajouter un produit
+            </a>
+            <a href="{{ path('supplier_products') }}" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+                Gérer les produits
+            </a>
+        </div>
+    </div>
+{% endblock %}

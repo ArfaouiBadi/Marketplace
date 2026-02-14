@@ -1,0 +1,63 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Fournisseurs - Admin{% endblock %}
+
+{% block admin_content %}
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Fournisseurs</h1>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Entreprise</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Contact</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Produits</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Statut</th>
+                    <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for supplier in suppliers %}
+                    <tr class="{% if not supplier.isApproved %}bg-yellow-50{% endif %}">
+                        <td class="px-6 py-4">
+                            <p class="font-medium text-gray-900">{{ supplier.companyName }}</p>
+                            {% if supplier.description %}
+                                <p class="text-xs text-gray-500 mt-1">{{ supplier.description|u.truncate(60) }}</p>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <p class="text-sm text-gray-900">{{ supplier.user.fullName }}</p>
+                            <p class="text-xs text-gray-500">{{ supplier.user.email }}</p>
+                            {% if supplier.phone %}
+                                <p class="text-xs text-gray-500">{{ supplier.phone }}</p>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">{{ supplier.products|length }}</td>
+                        <td class="px-6 py-4 text-center">
+                            {% if supplier.isApproved %}
+                                <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Approuvé</span>
+                            {% else %}
+                                <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">En attente</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                {% if not supplier.isApproved %}
+                                    <form action="{{ path('admin_supplier_approve', {id: supplier.id}) }}" method="POST" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ supplier.id) }}">
+                                        <button type="submit" class="text-green-600 hover:text-green-700 text-sm font-medium">Approuver</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ path('admin_supplier_reject', {id: supplier.id}) }}" method="POST" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ supplier.id) }}">
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium">Rejeter</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

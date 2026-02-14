@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - MarketPlace{% endblock %}
+
+{% block body %}
+<div class="min-h-[70vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Connexion</h1>
+            <p class="mt-2 text-sm text-gray-600">Accédez à votre compte MarketPlace</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            {% if error %}
+                <div class="bg-red-50 text-red-800 border border-red-200 rounded-lg p-4 mb-6">
+                    <p class="text-sm font-medium">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-5">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="username" name="_username" value="{{ last_username }}" required autofocus
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                    <input type="password" id="password" name="_password" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm">
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-700 transition">
+                    Se connecter
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Pas encore de compte ?</p>
+                <div class="mt-2 flex justify-center gap-4">
+                    <a href="{{ path('app_register_client') }}" class="text-primary-600 hover:text-primary-700 font-medium">Inscription Client</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ path('app_register_supplier') }}" class="text-primary-600 hover:text-primary-700 font-medium">Inscription Fournisseur</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

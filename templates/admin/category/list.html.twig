@@ -1,0 +1,58 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Catégories - Admin{% endblock %}
+
+{% block admin_content %}
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Catégories</h1>
+        <a href="{{ path('admin_category_new') }}" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition">
+            + Nouvelle catégorie
+        </a>
+    </div>
+
+    {% if categories is not empty %}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Catégorie</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Slug</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Produits</th>
+                        <th class="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for category in categories %}
+                        <tr>
+                            <td class="px-6 py-4">
+                                <p class="font-medium text-gray-900">{{ category.name }}</p>
+                                {% if category.description %}
+                                    <p class="text-xs text-gray-500 mt-1">{{ category.description|u.truncate(60) }}</p>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-center text-sm text-gray-500 font-mono">{{ category.slug }}</td>
+                            <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">{{ category.products|length }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <a href="{{ path('admin_category_edit', {id: category.id}) }}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Modifier</a>
+                                    <form action="{{ path('admin_category_delete', {id: category.id}) }}" method="POST" class="inline" onsubmit="return confirm('Supprimer cette catégorie ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium">Supprimer</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-16 bg-white rounded-xl border border-gray-200">
+            <span class="text-4xl mb-4 block">📂</span>
+            <p class="text-gray-500 text-lg">Aucune catégorie.</p>
+            <a href="{{ path('admin_category_new') }}" class="mt-4 inline-block text-primary-600 hover:text-primary-700 font-medium">
+                Créer la première catégorie
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

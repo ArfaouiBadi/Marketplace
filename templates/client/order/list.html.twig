@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes - MarketPlace{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Mes Commandes</h1>
+
+    {% if orders is not empty %}
+        <div class="space-y-4">
+            {% for order in orders %}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <a href="{{ path('client_order_show', {reference: order.reference}) }}" class="text-lg font-semibold text-primary-600 hover:text-primary-700">
+                                {{ order.reference }}
+                            </a>
+                            <p class="text-sm text-gray-500 mt-1">{{ order.createdAt|date('d/m/Y à H:i') }}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="inline-block px-3 py-1 text-xs font-medium rounded-full
+                                {% if order.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                {% elseif order.status == 'confirmed' %}bg-blue-100 text-blue-800
+                                {% elseif order.status == 'shipped' %}bg-purple-100 text-purple-800
+                                {% elseif order.status == 'delivered' %}bg-green-100 text-green-800
+                                {% elseif order.status == 'cancelled' %}bg-red-100 text-red-800
+                                {% endif %}">
+                                {{ order.statusLabel }}
+                            </span>
+                            <span class="text-lg font-bold text-gray-900">{{ order.totalAmount }} €</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ order.items|length }} article(s)
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16 bg-white rounded-xl border border-gray-200">
+            <span class="text-4xl mb-4 block">📋</span>
+            <p class="text-gray-500 text-lg">Aucune commande pour le moment.</p>
+            <a href="{{ path('product_list') }}" class="mt-4 inline-block text-primary-600 hover:text-primary-700 font-medium">
+                Découvrir nos produits
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

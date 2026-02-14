@@ -1,3 +1,6 @@
+/* Tailwind is loaded via CDN in base.html.twig for development */
+/* Custom styles below */
+
 body {
-    background-color: skyblue;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }

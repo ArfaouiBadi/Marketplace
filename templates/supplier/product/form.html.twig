@@ -1,0 +1,73 @@
+{% extends 'supplier/base.html.twig' %}
+
+{% block title %}{{ isEdit ? 'Modifier' : 'Nouveau' }} produit - Fournisseur{% endblock %}
+
+{% block supplier_content %}
+    <div class="mb-6">
+        <a href="{{ path('supplier_products') }}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">← Retour aux produits</a>
+    </div>
+
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ isEdit ? 'Modifier le produit' : 'Nouveau produit' }}</h1>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {{ form_start(form, {'attr': {'class': 'space-y-5'}}) }}
+
+            <div>
+                {{ form_label(form.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.name, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div>
+                {{ form_label(form.description, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    {{ form_label(form.price, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.price, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(form.price) }}
+                </div>
+                <div>
+                    {{ form_label(form.stock, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.stock, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(form.stock) }}
+                </div>
+                <div>
+                    {{ form_label(form.category, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.category, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm'}}) }}
+                    {{ form_errors(form.category) }}
+                </div>
+            </div>
+
+            <div>
+                {{ form_label(form.image, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.image, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm', 'accept': 'image/*'}}) }}
+                {{ form_errors(form.image) }}
+                {% if isEdit and product.image %}
+                    <div class="mt-3">
+                        <p class="text-xs text-gray-500 mb-2">Image actuelle:</p>
+                        <img src="{{ asset('uploads/products/' ~ product.image) }}" alt="{{ product.name }}" class="h-24 w-24 object-cover rounded border border-gray-200">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center gap-2">
+                {{ form_widget(form.isActive, {'attr': {'class': 'rounded border-gray-300 text-primary-600 focus:ring-primary-500'}}) }}
+                {{ form_label(form.isActive, null, {'label_attr': {'class': 'text-sm font-medium text-gray-700'}}) }}
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="bg-primary-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-primary-700 transition text-sm">
+                    {{ isEdit ? 'Enregistrer les modifications' : 'Créer le produit' }}
+                </button>
+                <a href="{{ path('supplier_products') }}" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50 transition text-sm">
+                    Annuler
+                </a>
+            </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

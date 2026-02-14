@@ -1,0 +1,84 @@
+{# templates/emails/order_confirmation.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: bold; color: #2563eb; }
+        .order-info { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .items-table th { background: #f3f4f6; padding: 12px; text-align: left; font-weight: 600; }
+        .items-table td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+        .total-row { background: #f9fafb; font-weight: 600; font-size: 16px; }
+        .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+        .button { display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛒 MarketPlace</div>
+            <h1>Confirmation de commande</h1>
+        </div>
+
+        <p>Bonjour {{ client.firstName }},</p>
+        
+        <p>Merci pour votre commande ! Nous avons bien reçu votre achat et nous procédons déjà à sa préparation.</p>
+
+        <div class="order-info">
+            <p><strong>Numéro de commande:</strong> <span style="color: #2563eb;">{{ order.reference }}</span></p>
+            <p><strong>Date:</strong> {{ order.createdAt|date('d/m/Y à H:i') }}</p>
+            <p><strong>Statut:</strong> {{ order.statusLabel }}</p>
+        </div>
+
+        <h2>Détails de votre commande</h2>
+        
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.product.name }}</strong><br>
+                            <small style="color: #6b7280;">par {{ item.product.supplier.companyName }}</small>
+                        </td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unitPrice|number_format(2, ',', ' ') }} €</td>
+                        <td>{{ item.subtotal|number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="3" style="text-align: right;">Total:</td>
+                    <td>{{ order.totalAmount|number_format(2, ',', ' ') }} €</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Vous pouvez suivre votre commande en vous connectant à votre compte MarketPlace.</p>
+
+        <p style="text-align: center; margin: 30px 0;">
+            <a href="{{ app.request.scheme }}://localhost:8000/client/orders/{{ order.reference }}" class="button">
+                Voir ma commande
+            </a>
+        </p>
+
+        <p>Des questions ? Nous sommes là pour vous aider !</p>
+
+        <div class="footer">
+            <p>© {{ "now"|date('Y') }} MarketPlace. Tous droits réservés.</p>
+            <p>Cet email a été envoyé à {{ client.email }}</p>
+        </div>
+    </div>
+</body>
+</html>

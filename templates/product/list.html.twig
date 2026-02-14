@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits - MarketPlace{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        {# Sidebar filters #}
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="font-semibold text-gray-900 mb-4">Catégories</h3>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ path('product_list') }}" class="text-sm {% if currentCategory == 0 and searchQuery == '' %}text-primary-600 font-semibold{% else %}text-gray-600 hover:text-primary-600{% endif %}">
+                            Toutes les catégories
+                        </a>
+                    </li>
+                    {% for category in categories %}
+                        <li>
+                            <a href="{{ path('product_list', {category: category.id}) }}" class="text-sm {% if currentCategory == category.id %}text-primary-600 font-semibold{% else %}text-gray-600 hover:text-primary-600{% endif %}">
+                                {{ category.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        {# Product grid #}
+        <div class="flex-1">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {% if searchQuery %}
+                        Résultats pour "{{ searchQuery }}"
+                    {% else %}
+                        Tous les produits
+                    {% endif %}
+                </h1>
+                <span class="text-sm text-gray-500">{{ products|length }} produit(s)</span>
+            </div>
+
+            {% if products is not empty %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for product in products %}
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition group">
+                            <div class="bg-gray-100 h-48 flex items-center justify-center overflow-hidden">
+                                {% if product.image %}
+                                    <img src="{{ asset('uploads/products/' ~ product.image) }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                                {% else %}
+                                    <span class="text-6xl">📦</span>
+                                {% endif %}
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-900 group-hover:text-primary-600 mb-1">
+                                    <a href="{{ path('product_show', {id: product.id}) }}">{{ product.name }}</a>
+                                </h3>
+                                {% if product.category %}
+                                    <span class="inline-block bg-primary-50 text-primary-700 text-xs px-2 py-1 rounded-full mb-2">{{ product.category.name }}</span>
+                                {% endif %}
+                                <p class="text-sm text-gray-500 mb-2">
+                                    Par <span class="font-medium">{{ product.supplier.companyName }}</span>
+                                </p>
+                                <p class="text-sm text-gray-500 mb-3">{{ product.description|default('Aucune description')|u.truncate(80) }}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-bold text-primary-600">{{ product.price }} €</span>
+                                    {% if product.stock > 0 %}
+                                        <span class="text-xs text-green-600 font-medium">En stock ({{ product.stock }})</span>
+                                    {% else %}
+                                        <span class="text-xs text-red-600 font-medium">Rupture de stock</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-16 bg-white rounded-xl border border-gray-200">
+                    <span class="text-4xl mb-4 block">🔍</span>
+                    <p class="text-gray-500 text-lg">Aucun produit trouvé.</p>
+                    {% if searchQuery %}
+                        <p class="text-gray-400 text-sm mt-2">Essayez avec d'autres mots-clés.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
