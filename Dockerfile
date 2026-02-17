@@ -32,15 +32,15 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Install PHP deps (no dev in production; use --no-dev when you want prod)
-RUN composer install --no-interaction --no-scripts --prefer-dist \
-    && composer dump-autoload --optimize --classmap-authoritative
+RUN composer install --no-interaction --no-scripts --prefer-dist
 
 # Copy app (vendor excluded via .dockerignore so we keep composer's vendor)
 COPY . .
 
-# Run post-install scripts (cache:clear, assets:install, etc.)
+# Rebuild autoload so App\ (src/) is in the classmap, then run post-install scripts
 ENV APP_ENV=prod
-RUN composer run-script post-install-cmd
+RUN composer dump-autoload --optimize --classmap-authoritative \
+    && composer run-script post-install-cmd
 
 # Optional: if you use Node for Tailwind, uncomment and add a node stage
 # FROM node:20-alpine AS node_build
