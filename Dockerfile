@@ -69,7 +69,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN a2enmod rewrite
 
 COPY --from=php_base /app /var/www/html
-RUN chown -R www-data:www-data /var/www/html/var
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/var
 
 # Document root for Symfony public folder
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public

@@ -65,8 +65,16 @@ Then open `http://localhost:8080`. If it works locally but not on Railway, the p
 | Symptom | What to check |
 |--------|----------------|
 | “Application failed to respond” | App not listening on **PORT** (fixed by entrypoint), or container exiting (see logs). |
-| 502 / 503 | Container crash or health check failing; check **Deploy logs**. |
+| 502 / 503 | Container crash or health check failing; check **Deploy logs**. Apache must listen on **0.0.0.0:PORT** (entrypoint does this). |
 | Blank / 500 after load | **APP_ENV=prod**, **APP_DEBUG=0**, **DATABASE_URL** and **APP_SECRET** set. |
 | Migrations fail in logs | **DATABASE_URL** correct and Postgres service running and linked. |
 
 After changing the entrypoint to use **PORT**, redeploy and re-check the public URL and deploy logs.
+
+---
+
+## 7. Browser console: `webpage_content_reporter.js` / "Unexpected token 'export'"
+
+This error comes from a **browser extension** (e.g. reporter, accessibility, or ad-blocker), not from your Symfony app. The extension injects a script that uses ES module syntax (`export`) in a non-module context.
+
+**What to do:** Ignore it, or disable the extension on your site to clean the console. It does not affect your app.
